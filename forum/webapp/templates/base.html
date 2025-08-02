@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Форум</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header>
+        {% if user.is_authenticated %}
+            Привет, {{ user.username }}! |
+            <a href="{% url 'accounts:logout' %}">Выйти</a> |
+            <a href="{% url 'accounts:profile' %}">Личный кабинет</a>
+        {% else %}
+            <a href="{% url 'accounts:login' %}">Вход</a> |
+            <a href="{% url 'accounts:register' %}">Регистрация</a>
+        {% endif %}
+    </header>
+
+    <hr>
+
+    {% block content %}
+    {% endblock %}
+</body>
+</html>
+

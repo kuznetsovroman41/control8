@@ -5,6 +5,7 @@ from django.db.models import Count
 
 from ..models.thread import Thread
 from ..forms.thread_form import ThreadForm
+from django.db.models import Count
 
 class ThreadListView(ListView):
     model = Thread
@@ -13,7 +14,8 @@ class ThreadListView(ListView):
     ordering = ['-created_at']
 
     def get_queryset(self):
-        return Thread.objects.annotate(reply_count=Count('reply'))
+        return Thread.objects.annotate(reply_count=Count('answers'))
+
 
 class ThreadCreateView(LoginRequiredMixin, CreateView):
     model = Thread

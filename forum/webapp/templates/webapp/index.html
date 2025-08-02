@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>Темы форума</h1>
+    <ul>
+        {% for topic in topics %}
+            <li>
+                <a href="{% url 'webapp:topic_detail' topic.pk %}">{{ topic.title }}</a>
+                <p>{{ topic.author }} | {{ topic.created_at }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
