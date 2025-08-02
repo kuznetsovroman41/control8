@@ -10,7 +10,12 @@
     <header>
         {% if user.is_authenticated %}
             Привет, {{ user.username }}! |
-            <a href="{% url 'accounts:logout' %}">Выйти</a> |
+            <form method="post" action="{% url 'accounts:logout' %}" style="display:inline;">
+            {% csrf_token %}
+                <button type="submit" style="background:none; border:none; padding:0; cursor:pointer; color:blue; text-decoration:underline;">
+                    Выйти
+                </button>
+            </form>
             <a href="{% url 'accounts:profile' %}">Личный кабинет</a>
         {% else %}
             <a href="{% url 'accounts:login' %}">Вход</a> |
