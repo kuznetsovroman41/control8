@@ -13,7 +13,14 @@ class AnswerEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return reverse_lazy('webapp:thread_detail', kwargs={'pk': self.object.topic.pk})
 
     def test_func(self):
-        return self.get_object().author == self.request.user
+        user = self.request.user
+        answer = self.get_object()
+        return (
+                user.is_superuser or
+                user.groups.filter(name='Moderator').exists() or
+                answer.author == user
+        )
+
 
 class AnswerDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Answer
@@ -23,4 +30,11 @@ class AnswerDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return reverse_lazy('webapp:thread_detail', kwargs={'pk': self.object.topic.pk})
 
     def test_func(self):
-        return self.get_object().author == self.request.user
+        user = self.request.user
+        answer = self.get_object()
+        return (
+                user.is_superuser or
+                user.groups.filter(name='Moderator').exists() or
+                answer.author == user
+        )
+

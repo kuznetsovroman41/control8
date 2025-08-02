@@ -28,12 +28,12 @@
           {{ answer.content|linebreaks }}
         </div>
       </div>
-      {% if answer.author == user %}
-        <div class="ms-3">
-          <a href="{% url 'webapp:answer_edit' answer.pk %}" class="btn btn-sm btn-outline-secondary mb-1">Редактировать</a>
-          <a href="{% url 'webapp:answer_delete' answer.pk %}" class="btn btn-sm btn-outline-danger">Удалить</a>
-        </div>
-      {% endif %}
+  {% if request.user == answer.author or request.user.is_superuser or is_moderator %}
+    <div class="ms-3 d-flex flex-column align-items-end">
+      <a href="{% url 'webapp:answer_edit' answer.pk %}" class="btn btn-sm btn-outline-secondary mb-1">Изменить</a>
+      <a href="{% url 'webapp:answer_delete' answer.pk %}" class="btn btn-sm btn-outline-danger">Удалить</a>
+    </div>
+  {% endif %}
     </li>
   {% empty %}
     <li class="list-group-item">Ответов пока нет.</li>

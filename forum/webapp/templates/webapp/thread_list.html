@@ -10,19 +10,29 @@
 
 <ul class="list-group">
   {% for thread in threads %}
-    <a href="{% url 'webapp:thread_detail' thread.pk %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-      <div>
-        <strong>{{ thread.title }}</strong><br>
-        Автор: {{ thread.author.username }} |
-        Дата: {{ thread.created_at|date:"d.m.Y H:i" }} |
-        Ответов: {{ thread.reply_count|default:"0" }}
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      <a href="{% url 'webapp:thread_detail' thread.pk %}" class="flex-grow-1 text-decoration-none text-reset">
+        <div>
+          <strong>{{ thread.title }}</strong><br>
+          Автор: {{ thread.author.username }} |
+          Дата: {{ thread.created_at|date:"d.m.Y H:i" }} |
+          Ответов: {{ thread.reply_count|default:"0" }}
+        </div>
+      </a>
+
+      <div class="d-flex align-items-center">
+        {% if user == thread.author or user.is_superuser or is_moderator %}
+          <a href="{% url 'webapp:thread_edit' thread.pk %}" class="btn btn-sm btn-outline-secondary me-2">Редактировать</a>
+          <a href="{% url 'webapp:thread_delete' thread.pk %}" class="btn btn-sm btn-outline-danger">Удалить</a>
+        {% endif %}
+
+        {% if thread.author.avatar %}
+          <img src="{{ thread.author.avatar.url }}" alt="Аватар" width="40" height="40" class="rounded-circle ms-3">
+        {% else %}
+          <img src="{% static 'images/default_avatar.png' %}" alt="Аватар по умолчанию" width="40" height="40" class="rounded-circle ms-3">
+        {% endif %}
       </div>
-      {% if thread.author.avatar %}
-        <img src="{{ thread.author.avatar.url }}" alt="Аватар" width="40" height="40" class="rounded-circle">
-      {% else %}
-        <img src="{% static 'images/default_avatar.png' %}" alt="Аватар по умолчанию" width="40" height="40" class="rounded-circle">
-      {% endif %}
-    </a>
+    </li>
   {% empty %}
     <li class="list-group-item">Тем пока нет</li>
   {% endfor %}
@@ -32,21 +42,31 @@
   <ul class="pagination justify-content-center">
     {% if threads.has_previous %}
       <li class="page-item">
-        <a class="page-link" href="?page={{ threads.previous_page_number }}">&laquo; Предыдущая</a>
+        <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ threads.previous_page_number }}">&laquo; Предыдущая</a>
       </li>
     {% else %}
       <li class="page-item disabled"><span class="page-link">&laquo; Предыдущая</span></li>
     {% endif %}
 
+    {% for num in threads.paginator.page_range %}
+      {% if num == threads.number %}
+        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+      {% else %}
+        <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+      {% endif %}
+    {% endfor %}
+
     {% if threads.has_next %}
       <li class="page-item">
-        <a class="page-link" href="?page={{ threads.next_page_number }}">Следующая &raquo;</a>
+        <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ threads.next_page_number }}">Следующая &raquo;</a>
       </li>
     {% else %}
       <li class="page-item disabled"><span class="page-link">Следующая &raquo;</span></li>
     {% endif %}
   </ul>
 </nav>
+
 {% endblock %}
+
 
 
