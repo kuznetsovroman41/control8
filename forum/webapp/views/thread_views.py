@@ -17,8 +17,8 @@ class ThreadListView(ListView):
     paginate_by = 5
 
     def get_queryset(self):
-        qs = super().get_queryset()
-        return qs.annotate(reply_count=Count('answers'))
+        return Thread.objects.annotate(reply_count=Count('answers')).order_by('-created_at')
+
 
 
 
