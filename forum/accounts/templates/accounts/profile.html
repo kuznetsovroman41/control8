@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<h2>Профиль пользователя {{ profile_user.username }}</h2>
+{% if profile_user.avatar %}
+  <img src="{{ profile_user.avatar.url }}" alt="Аватар {{ profile_user.username }}" width="150" height="150" style="border-radius:50%;">
+{% else %}
+  <img src="{% static 'images/default_avatar.png' %}" alt="Дефолтный аватар" width="150" height="150" style="border-radius:50%;">
+{% endif %}
+<p>Email: {{ profile_user.email }}</p>
+<p>Количество сообщений: {{ answer_count }}</p>
+
+<hr>
+
+<h3>Темы пользователя</h3>
+<ul class="list-group">
+  {% for thread in user_threads %}
+    <a href="{% url 'webapp:thread_detail' thread.pk %}" class="list-group-item list-group-item-action">
+      {{ thread.title }} (Ответов: {{ thread.reply_count }})
+    </a>
+  {% empty %}
+    <li class="list-group-item">У пользователя нет тем</li>
+  {% endfor %}
+</ul>
+{% endblock %}
+
+

@@ -52,7 +52,7 @@
         <a href="{% url 'webapp:thread_list' %}">Главная</a>
         {% if user.is_authenticated %}
             <span>Привет, {{ user.username }}!</span>
-            <a href="{% url 'accounts:profile' %}">Личный кабинет</a>
+            <a href="{% url 'accounts:profile' user.pk %}">Личный кабинет</a>
 
             <form method="post" action="{% url 'accounts:logout' %}">
                 {% csrf_token %}

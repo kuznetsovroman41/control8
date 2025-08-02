@@ -5,10 +5,10 @@ from .views import RegisterView, ProfileView
 app_name = 'accounts'
 
 urlpatterns = [
-    path('login/', LoginView.as_view(template_name='account/login.html'), name='login'),
+    path('login/', LoginView.as_view(template_name='accounts/login.html'), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('register/', RegisterView.as_view(), name='register'),
-    path('profile/', ProfileView.as_view(), name='profile'),
+    path('profile/<int:pk>/', ProfileView.as_view(), name='profile'),
 ]
 
 
