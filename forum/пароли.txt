@@ -1,0 +1,3 @@
+ForumUser1 пароли такие же
+ForumUser2
+admin(модератор) пароль админ
