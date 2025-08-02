@@ -2,9 +2,9 @@ from django.views.generic import ListView, CreateView, DetailView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse, reverse_lazy
 from django.db.models import Count
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from ..models.thread import Thread
-from ..models.answer import Answer
 from ..forms.answer_form import AnswerForm
 from ..forms.thread_form import ThreadForm
 
@@ -13,6 +13,7 @@ class ThreadListView(ListView):
     template_name = 'webapp/thread_list.html'
     context_object_name = 'threads'
     ordering = ['-created_at']
+    paginate_by = 10
 
     def get_queryset(self):
         return Thread.objects.annotate(reply_count=Count('answers'))
@@ -33,13 +34,23 @@ class ThreadDetailView(LoginRequiredMixin, DetailView, FormView):
     model = Thread
     template_name = 'webapp/thread_detail.html'
     form_class = AnswerForm
-
-    def get_success_url(self):
-        return reverse('webapp:thread_detail', kwargs={'pk': self.object.pk})
+    paginate_by = 5
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['answers'] = self.object.answers.order_by('created_at')
+        answers_list = self.object.answers.order_by('created_at')
+
+        paginator = Paginator(answers_list, self.paginate_by)
+        page = self.request.GET.get('page')
+
+        try:
+            answers = paginator.page(page)
+        except PageNotAnInteger:
+            answers = paginator.page(1)
+        except EmptyPage:
+            answers = paginator.page(paginator.num_pages)
+
+        context['answers'] = answers
         if 'form' not in context:
             context['form'] = self.get_form()
         return context
@@ -55,3 +66,6 @@ class ThreadDetailView(LoginRequiredMixin, DetailView, FormView):
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
+
+    def get_success_url(self):
+        return reverse('webapp:thread_detail', kwargs={'pk': self.object.pk})

@@ -27,5 +27,26 @@
     <li class="list-group-item">Тем пока нет</li>
   {% endfor %}
 </ul>
+
+<nav aria-label="Page navigation" class="mt-3">
+  <ul class="pagination justify-content-center">
+    {% if threads.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ threads.previous_page_number }}">&laquo; Предыдущая</a>
+      </li>
+    {% else %}
+      <li class="page-item disabled"><span class="page-link">&laquo; Предыдущая</span></li>
+    {% endif %}
+
+    {% if threads.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ threads.next_page_number }}">Следующая &raquo;</a>
+      </li>
+    {% else %}
+      <li class="page-item disabled"><span class="page-link">Следующая &raquo;</span></li>
+    {% endif %}
+  </ul>
+</nav>
 {% endblock %}
+
 
