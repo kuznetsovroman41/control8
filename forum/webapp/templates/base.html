@@ -1,32 +1,76 @@
-{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <title>Форум</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <meta charset="UTF-8" />
+    <title>{% block title %}Форум{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        body {
+            padding-top: 0;
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+        }
+        header {
+            width: 220px;
+            background-color: #343a40;
+            color: white;
+            padding: 20px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+        header a, header button, header span {
+            display: block;
+            color: #adb5bd;
+            text-decoration: none;
+            margin-bottom: 15px;
+            font-weight: 500;
+            width: 100%;
+            text-align: left;
+        }
+        header a:hover, header button:hover {
+            color: white;
+            text-decoration: underline;
+        }
+        header button {
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+        }
+        main.container {
+            margin-left: 220px;
+            padding: 20px;
+            flex-grow: 1;
+        }
+    </style>
 </head>
 <body>
     <header>
+        <a href="{% url 'webapp:thread_list' %}">Главная</a>
         {% if user.is_authenticated %}
-            Привет, {{ user.username }}! |
-            <form method="post" action="{% url 'accounts:logout' %}" style="display:inline;">
-            {% csrf_token %}
-                <button type="submit" style="background:none; border:none; padding:0; cursor:pointer; color:blue; text-decoration:underline;">
-                    Выйти
-                </button>
-            </form>
+            <span>Привет, {{ user.username }}!</span>
             <a href="{% url 'accounts:profile' %}">Личный кабинет</a>
+
+            <form method="post" action="{% url 'accounts:logout' %}">
+                {% csrf_token %}
+                <button type="submit">Выйти</button>
+            </form>
         {% else %}
-            <a href="{% url 'accounts:login' %}">Вход</a> |
+            <a href="{% url 'accounts:login' %}">Вход</a>
             <a href="{% url 'accounts:register' %}">Регистрация</a>
         {% endif %}
     </header>
 
-    <hr>
+    <main class="container">
+        {% block content %}
+        {% endblock %}
+    </main>
 
-    {% block content %}
-    {% endblock %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
 
